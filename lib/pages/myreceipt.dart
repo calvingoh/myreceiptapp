@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:myreceiptapp/pages/seereceipt.dart';
+import 'package:myreceiptapp/service/database.dart';
+import 'package:myreceiptapp/service/shared_pref.dart';
 
 class MyReceipt extends StatefulWidget {
   MyReceipt({Key? key}) : super(key: key);
@@ -10,10 +13,126 @@ class MyReceipt extends StatefulWidget {
 }
 
 class _MyReceiptState extends State<MyReceipt> {
+  Stream? receiptStream;
+  String id = "";
+  bool searching = false;
+
+  getthesharedpref() async {
+    id = (await SharedPreferenceHelper().getUserId())!;
+    setState(() {});
+  }
+
+  getontheload() async {
+    await getthesharedpref();
+    receiptStream = await DatabaseMethods().gettheReceipt(id);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getontheload();
+    super.initState();
+  }
+
+  var queryResultSet = [];
+  var tempSearchStore = [];
+
+  initiateSearch(value) {
+    if (value.length == 0) {
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+      });
+    }
+    setState(() {
+      searching = true;
+    });
+    var capitalizedValue =
+        value.substring(0, 1).toUpperCase() + value.substring(1);
+
+    if (queryResultSet.length == 0 && value.length == 1) {
+      DatabaseMethods().Search(value, id).then((QuerySnapshot docs) {
+        for (int i = 0; i < docs.docs.length; ++i) {
+          queryResultSet.add(docs.docs[i].data());
+        }
+      });
+    } else {
+      tempSearchStore = [];
+      queryResultSet.forEach((element) {
+        if (element['Name'].startsWith(capitalizedValue)) {
+          setState(() {
+            tempSearchStore.add(element);
+          });
+        }
+      });
+    }
+  }
+
+  Widget allreceipt() {
+    return StreamBuilder(
+      stream: receiptStream,
+      builder: (context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: snapshot.data.docs.length,
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              DocumentSnapshot ds = snapshot.data.docs[index];
+
+              return GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Seereceipt(
+                            id: ds["Id"],
+                          )));
+                },
+                child: Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  margin: EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Seereceipt(
+                                    id: ds["Id"],
+                                  )));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: Text(
+                            ds["Name"],
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18.0),
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        thickness: 1.0,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            })
+            : Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+        body: Container(
           margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 45.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,6 +152,9 @@ class _MyReceiptState extends State<MyReceipt> {
                     color: Color(0xFFEFEFF4),
                     borderRadius: BorderRadius.circular(10)),
                 child: TextField(
+                  onChanged: (value) {
+                    initiateSearch(value);
+                  },
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       prefixIcon: Icon(Icons.search),
@@ -43,121 +165,70 @@ class _MyReceiptState extends State<MyReceipt> {
                       ),
                       hintText: "Search",
                       hintStyle: TextStyle(
-                          color: Color.fromRGBO(60, 60, 67, 0.3),
-                          fontSize: 18.0)),
+                          color: Color.fromRGBO(60, 60, 67, 0.3), fontSize: 18.0)),
                 ),
               ),
               SizedBox(
                 height: 30.0,
               ),
-              Row(
+              searching
+                  ? ListView(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                  primary: false,
+                  shrinkWrap: true,
+                  children: tempSearchStore.map((element) {
+                    return buildResultCard(element);
+                  }).toList())
+                  : Column(
                 children: [
-                  Text(
-                    "MY RECEIPTS",
-                    style: TextStyle(color: Colors.black45),
+                  Row(
+                    children: [
+                      Text(
+                        "MY RECEIPTS",
+                        style: TextStyle(color: Colors.black45),
+                      ),
+                      Spacer(),
+                    ],
                   ),
-                  Spacer(),
-                  Text("Sort",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w500)),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                  Text(
-                    "Filter",
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w500),
-                  )
+                  SizedBox(height: 30.0,),
+                  Container(
+                      height: MediaQuery.of(context).size.height/2,
+                      child: allreceipt()),
+
                 ],
               ),
-              Divider(
-                thickness: 1.0,
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> Seereceipt()));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Text(
-                          "Family Mart",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18.0),
-                        ),
-                      ),
-                    ),
-                      Divider(
-                thickness: 1.0,
-              ),
-                Padding(
-                   padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: Text(
-                        "Caring Pharmacy",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 18.0),
-                      ),
-                ),
-                      Divider(
-                thickness: 1.0,
-              ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: Text(
-                        "IKEA Furniture",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 18.0),
-                      ),
-                ),
-                      Divider(
-                thickness: 1.0,
-              ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: Text(
-                        "MC Donalds",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 18.0),
-                      ),
-                ),
-                      Divider(
-                thickness: 1.0,
-              ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: Text(
-                        "KFC",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 18.0),
-                      ),
-                ),
-                      Divider(
-                thickness: 1.0,
-              ),
-               Text("This is the end of your receipts.", style: TextStyle(color: Colors.black45),)
-                  ],
-                ),
-              )
             ],
-          )),
+          ),
+        ));
+  }
+
+  Widget buildResultCard(data) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Seereceipt(
+                  id: data["Id"],
+                )));
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            SizedBox(width: 12),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                data["Name"],
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Poppins'),
+              ),
+            ])
+          ],
+        ),
+      ),
     );
   }
 }

@@ -35,6 +35,18 @@ dependencies:
   fl_chart: ^0.12.0
   pie_chart: ^5.3.2
   flutter_barcode_scanner: ^2.0.0
+  bottom_navy_bar: ^6.0.0
+  firebase_auth: ^3.4.1
+  firebase_core: ^1.19.1
+  cloud_firestore: ^3.2.1
+  shared_preferences: ^2.0.15
+  random_string: ^2.1.0
+  firebase_storage: ^10.3.2
+  image_picker: ^0.8.5+3
+  fluttertoast: ^8.0.8
+  barcode_widget: ^2.0.3
+  intl: ^0.17.0
+  date_format: ^2.0.7
 
 
   # The following adds the Cupertino Icons font to your application.

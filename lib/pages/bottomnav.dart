@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myreceiptapp/pages/barcode.dart';
-import 'package:myreceiptapp/pages/dashboard.dart';
+import 'package:myreceiptapp/pages/dashboard_costumer.dart';
 import 'package:myreceiptapp/pages/myreceipt.dart';
 import 'package:myreceiptapp/pages/myspending.dart';
 import 'package:myreceiptapp/pages/profile.dart';
@@ -17,7 +17,7 @@ class _BottombarState extends State<Bottombar> {
   late List<Widget> pages;
 
   late Widget currentPage;
-  late Dashboard dashboardCostumer;
+  late DashboardCostumer dashboardCostumer;
 
   late BarcodeScan scan;
   late MyReceipt myReceipt;
@@ -30,7 +30,7 @@ class _BottombarState extends State<Bottombar> {
     scan = BarcodeScan();
     myReceipt = MyReceipt();
     myspending = Myspending();
-    dashboardCostumer = Dashboard();
+    dashboardCostumer = DashboardCostumer();
     profile = Profile();
     pages = [dashboardCostumer, scan, myReceipt, myspending, profile];
     currentPage = dashboardCostumer;
@@ -53,7 +53,7 @@ class _BottombarState extends State<Bottombar> {
           },
           currentIndex: currentTabIndex,
           type: BottomNavigationBarType.fixed,
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               label: "Home",

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myreceiptapp/pages/login.dart';
+import 'package:myreceiptapp/service/shared_pref.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
@@ -8,6 +10,28 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String myname = "", myusername = "", myimage = "", myemail = "";
+
+  getthesharedpref() async {
+    myemail = (await SharedPreferenceHelper().getUserEmail())!;
+    myname = (await SharedPreferenceHelper().getDisplayName())!;
+    myemail = (await SharedPreferenceHelper().getUserEmail())!;
+    myimage = (await SharedPreferenceHelper().getUserProfileUrl())!;
+    setState(() {});
+  }
+
+  loadthedata() async {
+    await getthesharedpref();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    loadthedata();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,18 +53,18 @@ class _ProfileState extends State<Profile> {
               ),
               Center(
                   child: Material(
-                elevation: 8.0,
-                borderRadius: BorderRadius.circular(80),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(80),
-                  child: Image.asset(
-                    "images/men.jpg",
-                    height: 150,
-                    width: 150,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )),
+                    elevation: 8.0,
+                    borderRadius: BorderRadius.circular(80),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(80),
+                      child: Image.network(
+                        myimage,
+                        height: 150,
+                        width: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )),
               SizedBox(
                 height: 70.0,
               ),
@@ -68,7 +92,7 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.w500),
                         ),
                         Text(
-                          "John Doe",
+                          myname,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 20.0,
@@ -106,7 +130,7 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.w500),
                         ),
                         Text(
-                          "johndoe@gmail.com",
+                          myemail,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 19.0,
@@ -120,23 +144,29 @@ class _ProfileState extends State<Profile> {
               SizedBox(
                 height: 80.0,
               ),
-              Material(
-                elevation: 5.0,
-                borderRadius: BorderRadius.circular(50),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 15.0),
-                  decoration: BoxDecoration(
-                      color: Color(0xFF42A132),
-                      borderRadius: BorderRadius.circular(50)),
-                  child: Center(
-                      child: Text(
-                    "LogOut",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22.0),
-                  )),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => logIn()));
+                },
+                child: Material(
+                  elevation: 5.0,
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    decoration: BoxDecoration(
+                        color: Color(0xFF42A132),
+                        borderRadius: BorderRadius.circular(50)),
+                    child: Center(
+                        child: Text(
+                          "LogOut",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22.0),
+                        )),
+                  ),
                 ),
               )
             ],
