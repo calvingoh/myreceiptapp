@@ -7,7 +7,7 @@ import 'package:myreceiptapp/vendors/vendornav.dart';
 class getBarcode extends StatefulWidget {
   String name;
   getBarcode({ required this.name});
-  
+
 
   @override
   State<getBarcode> createState() => _getBarcodeState();
@@ -19,40 +19,40 @@ class _getBarcodeState extends State<getBarcode> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
+        margin: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("#"+ widget.name, style: TextStyle(color: Colors.black, fontSize: 28.0, fontWeight: FontWeight.bold),),
-            SizedBox(height: 80.0,),
+            Text("#"+ widget.name, style: const TextStyle(color: Colors.black, fontSize: 28.0, fontWeight: FontWeight.bold),),
+            const SizedBox(height: 80.0,),
             Center(
               child: Card(
                 color: Colors.white,
                 elevation: 6,
                 shadowColor: Colors.amber,
-                child: Padding(padding: EdgeInsets.all(16),
-               child: BarcodeWidget(
-                barcode: Barcode.code128(),
-                data: widget.name,
-                width: 200,
-                height: 200,
-                drawText: false,
-               ) ),
+                child: Padding(padding: const EdgeInsets.all(16),
+                    child: BarcodeWidget(
+                      barcode: Barcode.code128(),
+                      data: widget.name,
+                      width: 200,
+                      height: 200,
+                      drawText: false,
+                    ) ),
               ),
             ),
-            SizedBox(height: 70.0,),
-             GestureDetector(
+            const SizedBox(height: 70.0,),
+            GestureDetector(
               onTap: () async {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> VendorNav()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> VendorNav()));
               },
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 30.0),
-                padding: EdgeInsets.symmetric(vertical: 15.0),
+                margin: const EdgeInsets.symmetric(horizontal: 30.0),
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                    color: Color(0xFF42A232),
+                    color: const Color(0xFF42A232),
                     borderRadius: BorderRadius.circular(12)),
-                child: Text(
+                child: const Text(
                   "Proceed",
                   style: TextStyle(
                       color: Colors.white,

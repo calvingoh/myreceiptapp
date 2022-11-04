@@ -88,13 +88,14 @@ class _getdataState extends State<getdata> {
       myshopping = "",
       myentertainment = "";
   Stream? addStream;
-  num total = 0;
+  var total = 0.0, can = 0.0;
   int data = 0;
   int _counter = 0;
 
   late Timer _timer;
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      can = total;
       setState(() {
         if (_counter > 0) {
           _counter--;
@@ -106,7 +107,7 @@ class _getdataState extends State<getdata> {
   }
 
   List<String> category = ['Food', 'Transport', 'Shopping', 'Entertainment'];
-  String? categoryItem;
+  String? categoryItem, show;
 
   getthesharedpref() async {
     myid = (await SharedPreferenceHelper().getUserId())!;
@@ -134,6 +135,7 @@ class _getdataState extends State<getdata> {
   loadthedata() async {
     await getThisUserInfo();
     await getthesharedpref();
+
     addStream = await DatabaseMethods().gettheItems(widget.id);
     setState(() {});
   }
@@ -158,7 +160,8 @@ class _getdataState extends State<getdata> {
             itemBuilder: (context, index) {
               DocumentSnapshot ds = snapshot.data.docs[index];
               total = total +
-                  int.parse(ds["Price"]) * int.parse(ds["Quantity"]);
+                  double.parse(ds["Price"]) * double.parse(ds["Quantity"]);
+              show = total.toStringAsFixed(2);
               return Container(
                   margin: EdgeInsets.only(right: 10.0, bottom: 10.0),
                   child: Column(
@@ -182,7 +185,7 @@ class _getdataState extends State<getdata> {
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            '${int.parse(ds["Quantity"]) * int.parse(ds["Price"])}',
+                            '${double.parse(ds["Quantity"]) * double.parse(ds["Price"])}',
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20.0,
@@ -252,7 +255,7 @@ class _getdataState extends State<getdata> {
                 ),
                 Spacer(),
                 Text(
-                  total.toString(),
+                  show.toString(),
                   style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 )
               ],
@@ -295,22 +298,24 @@ class _getdataState extends State<getdata> {
             ),
             GestureDetector(
               onTap: () {
+                print(total);
+                print(can);
                 if (categoryItem != null) {
                   Map<String, dynamic> addreceipt = {
                     "Id": widget.id,
-                    "Name": name,
+                    "Name": name.replaceFirst(name[0], name[0].toUpperCase()),
                     "Key": name.substring(0, 1).toUpperCase(),
                   };
 
                   DatabaseMethods()
-                      .addUserReceipt(addreceipt, myid)
+                      .addUserReceipt(addreceipt, myid, widget.id)
                       .then((value) {
                     Map<String, dynamic> userInfoMap = {
                       "name": myusername,
                       "username": myemail.replaceAll("@gmail.com", ""),
                       "email": myemail,
                       "Id": myid,
-                      "spend": int.parse(myspend) + total,
+                      "spend": double.parse(myspend) + can,
                       "sale": 0,
                       "Images": myimage,
                     };
@@ -318,14 +323,10 @@ class _getdataState extends State<getdata> {
                     var month = DateTime.now();
 
                     final formatted = formatDate(month, [mm]);
-                    num toatlmonth = int.parse(myspend) + total;
+                    num toatlmonth = double.parse(myspend) + can;
                     SharedPreferenceHelper()
                         .saveUserSpendUrl(toatlmonth.toString());
-                    formatted == 10
-                        ? SharedPreferenceHelper()
-                        .saveUserPhone(toatlmonth.toString())
-                        : SharedPreferenceHelper()
-                        .saveUserAddress(toatlmonth.toString());
+
                     categoryItem == "Food"
                         ? data = int.parse(myfood) + 1
                         : categoryItem == "Transport"

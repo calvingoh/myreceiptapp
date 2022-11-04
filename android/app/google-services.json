@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "90690713728",
+    "project_id": "myreceipt-1f459",
+    "storage_bucket": "myreceipt-1f459.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90690713728:android:017dddcf2d8dae779d8e65",
+        "android_client_info": {
+          "package_name": "com.example.myreceiptapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90690713728-grtl3dmgtn5cnf83d883tbhv49bn30jl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS-QjYVMbt9X-MHTTeymz1bO4GqRW40z0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90690713728-grtl3dmgtn5cnf83d883tbhv49bn30jl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

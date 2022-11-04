@@ -14,7 +14,7 @@ class DashboardCostumer extends StatefulWidget {
 
 class _DashboardCostumerState extends State<DashboardCostumer> {
   String? id, name, image;
-  String? spend;
+  String? spend, show;
 
   getthissharedpref() async {
     id = (await SharedPreferenceHelper().getUserId())!;
@@ -26,6 +26,8 @@ class _DashboardCostumerState extends State<DashboardCostumer> {
   getthisonload() async {
     await getthissharedpref();
     await getThisUserInfo();
+
+    show = double.parse(spend!).toStringAsFixed(2);
     setState(() {});
   }
 
@@ -47,7 +49,9 @@ class _DashboardCostumerState extends State<DashboardCostumer> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
+      body: image == null
+          ? Center(child: CircularProgressIndicator())
+          : Container(
         margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,8 +130,10 @@ class _DashboardCostumerState extends State<DashboardCostumer> {
                   SizedBox(
                     height: 10.0,
                   ),
-               spend==null? Center(child: CircularProgressIndicator()):   Text(
-                    spend.toString(),
+                  spend == null
+                      ? Center(child: CircularProgressIndicator())
+                      : Text(
+                    show.toString(),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 36.0,
@@ -146,7 +152,8 @@ class _DashboardCostumerState extends State<DashboardCostumer> {
                       bottomRight: Radius.circular(10))),
               child: Text(
                 "1",
-                style: TextStyle(color: Color.fromRGBO(34, 213, 102, 0.54)),
+                style:
+                TextStyle(color: Color.fromRGBO(34, 213, 102, 0.54)),
               ),
             ),
             SizedBox(
@@ -162,31 +169,40 @@ class _DashboardCostumerState extends State<DashboardCostumer> {
             SizedBox(
               height: 10.0,
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> BarcodeScan()));
-                },
-                child: Image.asset(
-                  "images/scannew.png",
-                  height: 160,
-                  width: 160,
-                ),
-              ),
-              GestureDetector(
-                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> MyReceipt()));
-                },
-                child: Image.asset(
-                  "images/past.png",
-                  height: 160,
-                  width: 160,
-                ),
-              )
-            ])
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BarcodeScan()));
+                    },
+                    child: Image.asset(
+                      "images/scannew.png",
+                      height: 160,
+                      width: 160,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyReceipt()));
+                    },
+                    child: Image.asset(
+                      "images/past.png",
+                      height: 160,
+                      width: 160,
+                    ),
+                  )
+                ])
           ],
         ),
       ),
     );
   }
 }
+

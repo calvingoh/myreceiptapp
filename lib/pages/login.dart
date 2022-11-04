@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myreceiptapp/main.dart';
 import 'package:myreceiptapp/pages/choose.dart';
 import 'package:myreceiptapp/service/database.dart';
 import 'package:myreceiptapp/service/shared_pref.dart';
@@ -28,7 +29,7 @@ class _logInState extends State<logIn> {
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Choose()),
+        MaterialPageRoute(builder: (context) => Ongo()),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -278,7 +279,7 @@ class _logInState extends State<logIn> {
                           borderRadius: BorderRadius.circular(12)),
                       child: Center(
                         child: Text(
-                          "Login",
+                          name ? "Register" : "Login",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 22.0,

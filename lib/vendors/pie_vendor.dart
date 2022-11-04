@@ -9,33 +9,33 @@ class PieVendor extends StatefulWidget {
 }
 
 class _PieVendorState extends State<PieVendor> {
-      Map<String, double> dataMap = {
-    "Snacks": 5,
-    "Icecream": 3,
-    "Bread": 2,
-    "Drinks": 2,
+  Map<String, double> dataMap = {
+    "Snacks": 1,
+    "Icecream": 1,
+    "Bread": 1,
+    "Drinks": 1,
   };
-     final colorList = <Color>[
-    Color.fromARGB(255, 12, 108, 187),
-    Color.fromARGB(255, 62, 169, 65),
+  final colorList = <Color>[
+    const Color.fromARGB(255, 12, 108, 187),
+    const Color.fromARGB(255, 62, 169, 65),
     Colors.orange,
     Colors.red
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  
+
       body: Container(
         child: Center(
           child: PieChart(
             dataMap: dataMap,
             colorList: colorList,
             chartRadius: MediaQuery.of(context).size.width / 1,
-            legendOptions: LegendOptions(
+            legendOptions: const LegendOptions(
               showLegendsInRow: true,
               legendPosition: LegendPosition.bottom,
             ),
-            chartValuesOptions: ChartValuesOptions(
+            chartValuesOptions: const ChartValuesOptions(
               showChartValuesInPercentage: true,
             ),
           ),
@@ -43,4 +43,4 @@ class _PieVendorState extends State<PieVendor> {
       ),
     );
   }
-  }
+}

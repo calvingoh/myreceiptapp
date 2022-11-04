@@ -17,14 +17,12 @@ class _MyspendingState extends State<Myspending> {
   String? october, nov;
 
   getthesharedpref() async {
-    october = await SharedPreferenceHelper().getUserPhone();
-    nov = await SharedPreferenceHelper().getUserAddress();
+    nov = await SharedPreferenceHelper().getUserSpend();
     setState(() {});
   }
 
   ontheload() async {
     await getthesharedpref();
-    await calculate1();
     await calculate2();
     setState(() {});
   }
@@ -37,26 +35,14 @@ class _MyspendingState extends State<Myspending> {
 
   double given = 0.0, given1 = 0.0;
 
-  calculate1() {
-    int talk = int.parse(october!);
-    double take = talk <= 10000
-        ? 10000.0
-        : talk <= 30000
-        ? 30000.0
-        : 50000.0;
-    print(take);
-    given = 0 / take;
-    print(given);
-  }
-
   calculate2() {
-    int talk = int.parse(nov!);
+    double talk = double.parse(nov!);
     double take = talk <= 10000
         ? 10000.0
         : talk <= 30000
         ? 30000.0
         : 50000.0;
-    given1 = 0 / take;
+    given1 = take / take;
     print(given1);
   }
 
@@ -128,7 +114,7 @@ class _MyspendingState extends State<Myspending> {
                               FlSpot(7, 0),
                               FlSpot(8, 0),
                               FlSpot(9, 0),
-                              FlSpot(10, given),
+                              FlSpot(10, 0),
                               FlSpot(11, given1),
                               FlSpot(12, 0),
                             ],

@@ -12,7 +12,7 @@ class VendorNav extends StatefulWidget {
 }
 
 class _VendorNavState extends State<VendorNav> {
-   int currentTabIndex = 0;
+  int currentTabIndex = 0;
   late List<Widget> pages;
 
   late Widget currentPage;
@@ -25,9 +25,9 @@ class _VendorNavState extends State<VendorNav> {
   @override
   void initState() {
     super.initState();
-   dashboard= Dashboard();
-   generate= generateReceipt();
-   report= Report();
+    dashboard= Dashboard();
+    generate= generateReceipt();
+    report= Report();
     profile=Profile();
     pages = [dashboard, generate, report, profile];
     currentPage = dashboard;
@@ -35,14 +35,14 @@ class _VendorNavState extends State<VendorNav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+
       bottomNavigationBar: BottomNavigationBar(
-       
-        selectedLabelStyle:  TextStyle(color: Color(0xFF42A132)),
-        showSelectedLabels: true,
-        fixedColor: Color(0xFF42A132),
-      unselectedLabelStyle: TextStyle(color: Colors.black),
-        showUnselectedLabels: true,
+
+          selectedLabelStyle:  const TextStyle(color: Color(0xFF42A132)),
+          showSelectedLabels: true,
+          fixedColor: const Color(0xFF42A132),
+          unselectedLabelStyle: const TextStyle(color: Colors.black),
+          showUnselectedLabels: true,
           onTap: (int index) {
             setState(() {
               currentTabIndex = index;
@@ -51,26 +51,26 @@ class _VendorNavState extends State<VendorNav> {
           },
           currentIndex: currentTabIndex,
           type: BottomNavigationBarType.fixed,
-          
-          items: <BottomNavigationBarItem>[
+
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: "Home",
-              
+
               activeIcon: Icon(Icons.home, color: Color(0xFF42A132)),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.qr_code_scanner_outlined),
               label: "Generate QR",
-              
-               activeIcon: Icon(Icons.qr_code_scanner_outlined, color: Color(0xFF42A132)),
+
+              activeIcon: Icon(Icons.qr_code_scanner_outlined, color: Color(0xFF42A132)),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.currency_exchange),
               label: "Report",
-               activeIcon: Icon(Icons.currency_exchange,  color: Color(0xFF42A132)),
-               
-              
+              activeIcon: Icon(Icons.currency_exchange,  color: Color(0xFF42A132)),
+
+
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

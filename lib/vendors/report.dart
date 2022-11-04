@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:myreceiptapp/service/shared_pref.dart';
 import 'package:myreceiptapp/vendors/pie_vendor.dart';
 import 'package:myreceiptapp/vendors/vendor_tiles.dart';
 
@@ -11,59 +12,86 @@ class Report extends StatefulWidget {
 }
 
 class _ReportState extends State<Report> {
-  final colorList = <Color>[
-    Color.fromARGB(255, 12, 108, 187),
-    Color.fromARGB(255, 62, 169, 65),
-    Colors.orange,
-    Colors.red
-  ];
+  String? nov;
+
+  getthesharedpref() async {
+    nov = await SharedPreferenceHelper().getUserSpend();
+    setState(() {});
+  }
+
+  ontheload() async {
+    await getthesharedpref();
+
+    await calculate2();
+    setState(() {});
+  }
+
+  calculate2() {
+    double talk = double.parse(nov!);
+    double take = talk <= 10000
+        ? 10000.0
+        : talk <= 30000
+        ? 30000.0
+        : 50000.0;
+    given1 = talk / take;
+    print(given1);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ontheload();
+  }
+
+  double given = 0.0, given1 = 0.0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+          margin: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "My Spendings",
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0),
               ),
-              SizedBox(
-                height: 30.0,
+              const SizedBox(
+                height: 70.0,
               ),
               Material(
                 elevation: 5.0,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Average Income",
                         style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.w400),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20.0,
                       ),
                       LineChart(
                         LineChartData(
                           minX: 0,
-                          maxX: 11,
+                          maxX: 12,
                           minY: 0,
-                          maxY: 6,
+                          maxY: 7,
                           titlesData: VendorLineTitles.getTitleData(),
                           gridData: FlGridData(
                             show: true,
                             getDrawingHorizontalLine: (value) {
                               return FlLine(
-                                color: Color.fromRGBO(0, 0, 0, 0.12),
+                                color: const Color.fromRGBO(0, 0, 0, 0.12),
                                 strokeWidth: 2,
                               );
                             },
@@ -76,15 +104,18 @@ class _ReportState extends State<Report> {
                           lineBarsData: [
                             LineChartBarData(
                               spots: [
-                                FlSpot(0, 3),
-                                FlSpot(2.6, 2),
-                                FlSpot(4.9, 5),
-                                FlSpot(6.8, 2.5),
-                                FlSpot(8, 4),
-                                FlSpot(9.5, 3),
-                                FlSpot(10, 3),
-                                FlSpot(10.5, 3),
-                                FlSpot(11, 4),
+                                FlSpot(1, 0),
+                                FlSpot(2, 0),
+                                FlSpot(3, 0),
+                                FlSpot(4, 0),
+                                FlSpot(5, 0),
+                                FlSpot(6, 0),
+                                FlSpot(7, 0),
+                                FlSpot(8, 0),
+                                FlSpot(9, 0),
+                                FlSpot(10, 0),
+                                FlSpot(11, given1),
+                                FlSpot(12, 0),
                               ],
                               isCurved: true,
                               barWidth: 2,
@@ -97,28 +128,8 @@ class _ReportState extends State<Report> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20.0,
-              ),
-              Material(
-                elevation: 5.0,
-                child: Container(
-                  padding: EdgeInsets.only(top: 10.0, left: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Categories",
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.w400),
-                      ),
-                      Container(
-                          height: 300,
-                          width: MediaQuery.of(context).size.width,
-                          child: PieVendor()),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),

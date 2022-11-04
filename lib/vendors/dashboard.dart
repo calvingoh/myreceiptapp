@@ -12,6 +12,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   String spend = "", sale = "", id = "";
+  String? show;
 
   getthissharedpref() async {
     id = (await SharedPreferenceHelper().getUserId())!;
@@ -31,6 +32,7 @@ class _DashboardState extends State<Dashboard> {
   getthisonload() async {
     await getthissharedpref();
     await getThisUserInfo();
+    show = double.parse(spend).toStringAsFixed(2);
     setState(() {});
   }
 
@@ -43,7 +45,9 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: spend == null
+          ? Center(child: CircularProgressIndicator())
+          : Container(
         margin: EdgeInsets.symmetric(vertical: 45.0, horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +133,7 @@ class _DashboardState extends State<Dashboard> {
                             color: Colors.white,
                           ))
                           : Text(
-                        spend,
+                        show!,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 35.0,

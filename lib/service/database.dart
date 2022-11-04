@@ -8,12 +8,14 @@ class DatabaseMethods {
         .set(userInfoMap);
   }
 
-  Future addUserReceipt(Map<String, dynamic> userInfoMap, String id) async {
+  Future addUserReceipt(
+      Map<String, dynamic> userInfoMap, String id, String addId) async {
     return await FirebaseFirestore.instance
         .collection("users")
         .doc(id)
         .collection("Receipt")
-        .add(userInfoMap);
+        .doc(addId)
+        .set(userInfoMap);
   }
 
   Future addUserMonth(Map<String, dynamic> userInfoMap, String id) async {
@@ -24,15 +26,12 @@ class DatabaseMethods {
         .add(userInfoMap);
   }
 
-
   Future updateSpend(Map<String, dynamic> userInfoMap, String id) async {
     return await FirebaseFirestore.instance
         .collection("users")
         .doc(id)
         .update(userInfoMap);
   }
-
-
 
   Future addBarcodeDetail(
       Map<String, dynamic> userInfoMap, String addId) async {
@@ -87,5 +86,14 @@ class DatabaseMethods {
         .collection("Receipt")
         .where("Key", isEqualTo: date.substring(0, 1).toUpperCase())
         .get();
+  }
+
+  Future addDelete(String Id, String addId) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(addId)
+        .collection("Receipt")
+        .doc(addId)
+        .delete();
   }
 }

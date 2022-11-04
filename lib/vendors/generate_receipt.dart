@@ -48,13 +48,14 @@ class _generateReceiptState extends State<generateReceipt> {
   TextEditingController namecontroller = new TextEditingController();
   TextEditingController pricecontroller = new TextEditingController();
   TextEditingController quantitycontroller = new TextEditingController();
-  TextEditingController receiptcontroller = new TextEditingController();
+
   final _picker = ImagePicker();
   Stream? addStream;
   File? selectedImage;
+  String? show;
   bool isSearching = false, _isLoading = false;
   String? addId = randomNumeric(10);
-  num total = 0, total1 = 0, total2 = 0;
+  var total, total1, total2;
 
   loadthedata() async {
     await getthesharedpref();
@@ -83,7 +84,8 @@ class _generateReceiptState extends State<generateReceipt> {
             itemBuilder: (context, index) {
               DocumentSnapshot ds = snapshot.data.docs[index];
               total = total +
-                  int.parse(ds["Price"]) * int.parse(ds["Quantity"]);
+                  double.parse(ds["Price"]) * double.parse(ds["Quantity"]);
+              show = total.toStringAsFixed(2);
               return Container(
                   margin: EdgeInsets.only(right: 10.0, bottom: 10.0),
                   child: Column(
@@ -191,7 +193,7 @@ class _generateReceiptState extends State<generateReceipt> {
               SizedBox(
                 height: 30.0,
               ),
-              Container(height: 200, child: allpayment()),
+              Container(height: 280, child: allpayment()),
               Divider(
                 color: Colors.black45,
               ),
@@ -203,41 +205,34 @@ class _generateReceiptState extends State<generateReceipt> {
                     TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                   Spacer(),
-                  Text(
-                    total.toString(),
-                    style:
-                    TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  total == null
+                      ? Text(
+                    "0",
+                    style: TextStyle(
+                        fontSize: 20.0, fontWeight: FontWeight.bold),
+                  )
+                      : Text(
+                    show.toString(),
+                    style: TextStyle(
+                        fontSize: 20.0, fontWeight: FontWeight.bold),
                   )
                 ],
               ),
               SizedBox(
-                height: 30.0,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(20)),
-                child: TextField(
-                  controller: receiptcontroller,
-                  decoration: InputDecoration(
-                      hintText: "Fill Receipt name", border: InputBorder.none),
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
+                height: 40.0,
               ),
               GestureDetector(
                 onTap: () {
                   print(total1);
+                  total = total / 2;
+
                   DateTime now = DateTime.now();
                   String formattedDate = DateFormat('h:mma').format(now);
                   final DateFormat formatter = DateFormat('yyyy-MM-dd');
                   final String formatted = formatter.format(now);
                   Map<String, dynamic> addReceipt = {
                     "Id": addId,
-                    "Receipt": receiptcontroller.text,
+                    "Receipt": myusername,
                     "Date": formatted.toString(),
                     "Time": formattedDate.toString()
                   };
@@ -247,24 +242,20 @@ class _generateReceiptState extends State<generateReceipt> {
                     "username": myemail.replaceAll("@gmail.com", ""),
                     "email": myemail,
                     "Id": myid,
-                    "spend": int.parse(myownspend) + total,
+                    "spend": double.parse(myownspend) + total,
                     "sale": int.parse(myownsale) + 1,
                     "Images": myimage,
                   };
 
                   DatabaseMethods().updateSpend(userInfoMap, myid);
                   var month = DateTime.now();
-                  total1 = int.parse(myownspend) + total1;
+                  total1 = double.parse(myownspend) + total;
                   total2 = int.parse(myownsale) + 1;
                   SharedPreferenceHelper().saveUserSpendUrl(total1.toString());
                   SharedPreferenceHelper().saveUserSaleUrl(total2.toString());
                   final formatted1 = formatDate(month, [mm]);
-                  num toatlmonth = int.parse(myspend) + total;
-                  formatted1 == 10
-                      ? SharedPreferenceHelper()
-                      .saveUserPhone(toatlmonth.toString())
-                      : SharedPreferenceHelper()
-                      .saveUserAddress(toatlmonth.toString());
+                  num toatlmonth = double.parse(myspend) + total;
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -301,12 +292,27 @@ class _generateReceiptState extends State<generateReceipt> {
           child: Container(
             child: Column(
               children: [
-                Text(
-                  "Add Item",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0),
+                Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.green,
+                        )),
+                    SizedBox(
+                      width: 50.0,
+                    ),
+                    Text(
+                      "Add Item",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 20.0,

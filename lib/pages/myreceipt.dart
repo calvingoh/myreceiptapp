@@ -82,7 +82,7 @@ class _MyReceiptState extends State<MyReceipt> {
               DocumentSnapshot ds = snapshot.data.docs[index];
 
               return GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -96,25 +96,45 @@ class _MyReceiptState extends State<MyReceipt> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Seereceipt(
-                                    id: ds["Id"],
-                                  )));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5.0),
-                          child: Text(
-                            ds["Name"],
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Seereceipt(
+                                        id: ds["Id"],
+                                      )));
+                            },
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.symmetric(vertical: 5.0),
+                              child: Text(
+                                ds["Name"],
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 18.0),
+                              ),
+                            ),
                           ),
-                        ),
+                          GestureDetector(
+                            onTap: () async {
+                              await FirebaseFirestore.instance
+                                  .runTransaction(
+                                      (Transaction myTransaction) async {
+                                    await myTransaction.delete(
+                                        snapshot.data.docs[index].reference);
+                                  });
+                            },
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.black,
+                            ),
+                          )
+                        ],
                       ),
                       Divider(
                         thickness: 1.0,
@@ -132,72 +152,76 @@ class _MyReceiptState extends State<MyReceipt> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 45.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "My Receipts",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30.0),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    color: Color(0xFFEFEFF4),
-                    borderRadius: BorderRadius.circular(10)),
-                child: TextField(
-                  onChanged: (value) {
-                    initiateSearch(value);
-                  },
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: Icon(
-                        Icons.cancel_rounded,
-                        color: Color(0xFF8E8E93),
-                        size: 20.0,
-                      ),
-                      hintText: "Search",
-                      hintStyle: TextStyle(
-                          color: Color.fromRGBO(60, 60, 67, 0.3), fontSize: 18.0)),
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 45.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "My Receipts",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30.0),
                 ),
-              ),
-              SizedBox(
-                height: 30.0,
-              ),
-              searching
-                  ? ListView(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  primary: false,
-                  shrinkWrap: true,
-                  children: tempSearchStore.map((element) {
-                    return buildResultCard(element);
-                  }).toList())
-                  : Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "MY RECEIPTS",
-                        style: TextStyle(color: Colors.black45),
-                      ),
-                      Spacer(),
-                    ],
+                SizedBox(
+                  height: 20.0,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xFFEFEFF4),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: TextField(
+                    onChanged: (value) {
+                      initiateSearch(value);
+                    },
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        prefixIcon: Icon(Icons.search),
+                        suffixIcon: Icon(
+                          Icons.cancel_rounded,
+                          color: Color(0xFF8E8E93),
+                          size: 20.0,
+                        ),
+                        hintText: "Search",
+                        hintStyle: TextStyle(
+                            color: Color.fromRGBO(60, 60, 67, 0.3),
+                            fontSize: 18.0)),
                   ),
-                  SizedBox(height: 30.0,),
-                  Container(
-                      height: MediaQuery.of(context).size.height/2,
-                      child: allreceipt()),
-
-                ],
-              ),
-            ],
+                ),
+                SizedBox(
+                  height: 30.0,
+                ),
+                searching
+                    ? ListView(
+                    padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                    primary: false,
+                    shrinkWrap: true,
+                    children: tempSearchStore.map((element) {
+                      return buildResultCard(element);
+                    }).toList())
+                    : Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "MY RECEIPTS",
+                          style: TextStyle(color: Colors.black45),
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    Container(
+                        height: MediaQuery.of(context).size.height / 2,
+                        child: allreceipt()),
+                  ],
+                ),
+              ],
+            ),
           ),
         ));
   }
@@ -215,17 +239,24 @@ class _MyReceiptState extends State<MyReceipt> {
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(width: 12),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                data["Name"],
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Poppins'),
+            Text(
+              data["Name"],
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Poppins'),
+            ),
+            GestureDetector(
+              onTap: () async {
+                await DatabaseMethods().addDelete(id, data["Id"]);
+              },
+              child: Icon(
+                Icons.delete,
+                color: Colors.black,
               ),
-            ])
+            )
           ],
         ),
       ),

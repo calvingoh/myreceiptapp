@@ -53,7 +53,7 @@ class _BottombarState extends State<Bottombar> {
           },
           currentIndex: currentTabIndex,
           type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               label: "Home",
