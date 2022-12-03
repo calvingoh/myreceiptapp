@@ -1,6 +1,6 @@
 # myreceiptapp
 
-A new Flutter project.
+A mobile application that uses barcode technology to digitise paper-based receipts.
 
 ## Getting Started
 
