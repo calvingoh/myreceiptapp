@@ -123,14 +123,14 @@ class SharedPreferenceHelper {
     return prefs.getString(userProfilePicKey);
   }
 
-  Future<String?> getUserFood() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(userFoodKey);
-  }
-
   Future<String?> getUserRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(userRoleKey);
+  }
+
+  Future<String?> getUserFood() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(userFoodKey);
   }
 
   Future<String?> getUserTransport() async {

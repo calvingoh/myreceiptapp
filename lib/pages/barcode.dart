@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:myreceiptapp/pages/bottomnav.dart';
+import 'package:myreceiptapp/pages/category.dart';
 import 'package:myreceiptapp/service/database.dart';
 import 'package:myreceiptapp/service/shared_pref.dart';
 import 'package:myreceiptapp/vendors/vendornav.dart';
@@ -88,9 +89,9 @@ class _getdataState extends State<getdata> {
       myshopping = "",
       myentertainment = "";
   Stream? addStream;
-  var total = 0.0, can = 0.0;
+  var total = 0.0, can = 0.0, told=0.0;
   int data = 0;
-  int _counter = 0;
+  int _counter = -1, a=0;
 
   late Timer _timer;
   void _startTimer() {
@@ -99,7 +100,11 @@ class _getdataState extends State<getdata> {
       setState(() {
         if (_counter > 0) {
           _counter--;
+
         } else {
+          setState(() {
+
+          });
           _timer.cancel();
         }
       });
@@ -159,9 +164,13 @@ class _getdataState extends State<getdata> {
             scrollDirection: Axis.vertical,
             itemBuilder: (context, index) {
               DocumentSnapshot ds = snapshot.data.docs[index];
-              total = total +
-                  double.parse(ds["Price"]) * double.parse(ds["Quantity"]);
+              if(a==0){
+                total = total +
+                    double.parse(ds["Price"]) * double.parse(ds["Quantity"]);
+              }
               show = total.toStringAsFixed(2);
+
+
               return Container(
                   margin: EdgeInsets.only(right: 10.0, bottom: 10.0),
                   child: Column(
@@ -185,7 +194,7 @@ class _getdataState extends State<getdata> {
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            '${double.parse(ds["Quantity"]) * double.parse(ds["Price"])}',
+                            '${double.parse(ds["Quantity"]).round() * double.parse(ds["Price"]).roundToDouble()}',
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20.0,
@@ -263,36 +272,7 @@ class _getdataState extends State<getdata> {
             SizedBox(
               height: 20.0,
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all()),
-              padding: EdgeInsets.only(right: 20.0, left: 20.0),
-              width: MediaQuery.of(context).size.width,
-              height: 50,
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                    onChanged: (item) => setState(() {
-                      categoryItem = item!;
-                    }),
-                    hint: Text(
-                      "Category",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20.0),
-                    ),
-                    value: categoryItem,
-                    items: category
-                        .map((item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item,
-                          style: TextStyle(fontSize: 22),
-                        )))
-                        .toList()),
-              ),
-            ),
+
             SizedBox(
               height: 20.0,
             ),
@@ -300,55 +280,38 @@ class _getdataState extends State<getdata> {
               onTap: () {
                 print(total);
                 print(can);
-                if (categoryItem != null) {
-                  Map<String, dynamic> addreceipt = {
-                    "Id": widget.id,
-                    "Name": name.replaceFirst(name[0], name[0].toUpperCase()),
-                    "Key": name.substring(0, 1).toUpperCase(),
+
+                Map<String, dynamic> addreceipt = {
+                  "Id": widget.id,
+                  "Name": name.replaceFirst(name[0], name[0].toUpperCase()),
+                  "Key": name.substring(0, 1).toUpperCase(),
+                };
+
+                DatabaseMethods()
+                    .addUserReceipt(addreceipt, myid, widget.id)
+                    .then((value) {
+                  Map<String, dynamic> userInfoMap = {
+                    "name": myusername,
+                    "username": myemail.replaceAll("@gmail.com", ""),
+                    "email": myemail,
+                    "Id": myid,
+                    "spend": double.parse(myspend) + can,
+                    "sale": 0,
+                    "Images": myimage,
                   };
+                  DatabaseMethods().updateSpend(userInfoMap, myid);
+                  var month = DateTime.now();
 
-                  DatabaseMethods()
-                      .addUserReceipt(addreceipt, myid, widget.id)
-                      .then((value) {
-                    Map<String, dynamic> userInfoMap = {
-                      "name": myusername,
-                      "username": myemail.replaceAll("@gmail.com", ""),
-                      "email": myemail,
-                      "Id": myid,
-                      "spend": double.parse(myspend) + can,
-                      "sale": 0,
-                      "Images": myimage,
-                    };
-                    DatabaseMethods().updateSpend(userInfoMap, myid);
-                    var month = DateTime.now();
+                  final formatted = formatDate(month, [mm]);
+                  num toatlmonth = double.parse(myspend) + can;
+                  SharedPreferenceHelper()
+                      .saveUserSpendUrl(toatlmonth.toString());
 
-                    final formatted = formatDate(month, [mm]);
-                    num toatlmonth = double.parse(myspend) + can;
-                    SharedPreferenceHelper()
-                        .saveUserSpendUrl(toatlmonth.toString());
 
-                    categoryItem == "Food"
-                        ? data = int.parse(myfood) + 1
-                        : categoryItem == "Transport"
-                        ? data = int.parse(mytansport) + 1
-                        : categoryItem == "Shopping"
-                        ? data = int.parse(myshopping) + 1
-                        : data = int.parse(myentertainment) + 1;
-                    categoryItem == "Food"
-                        ? SharedPreferenceHelper().saveUserFood(data.toString())
-                        : categoryItem == "Transport"
-                        ? SharedPreferenceHelper()
-                        .saveUserTransport(data.toString())
-                        : categoryItem == "Shopping"
-                        ? SharedPreferenceHelper()
-                        .saveUserShopping(data.toString())
-                        : SharedPreferenceHelper()
-                        .saveUserEntertainment(data.toString());
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Category()));
+                });
 
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Bottombar()));
-                  });
-                }
               },
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -358,7 +321,7 @@ class _getdataState extends State<getdata> {
                     color: Color(0xFF42A232),
                     borderRadius: BorderRadius.circular(12)),
                 child: Text(
-                  "Done",
+                  "Next",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 18.0,

@@ -45,7 +45,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: spend == null
+      body: show == null
           ? Center(child: CircularProgressIndicator())
           : Container(
         margin: EdgeInsets.symmetric(vertical: 45.0, horizontal: 20.0),

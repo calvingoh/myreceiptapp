@@ -16,8 +16,8 @@ class _PieVendorState extends State<PieVendor> {
     "Drinks": 1,
   };
   final colorList = <Color>[
-    const Color.fromARGB(255, 12, 108, 187),
-    const Color.fromARGB(255, 62, 169, 65),
+    Color.fromARGB(255, 12, 108, 187),
+    Color.fromARGB(255, 62, 169, 65),
     Colors.orange,
     Colors.red
   ];
@@ -31,11 +31,11 @@ class _PieVendorState extends State<PieVendor> {
             dataMap: dataMap,
             colorList: colorList,
             chartRadius: MediaQuery.of(context).size.width / 1,
-            legendOptions: const LegendOptions(
+            legendOptions: LegendOptions(
               showLegendsInRow: true,
               legendPosition: LegendPosition.bottom,
             ),
-            chartValuesOptions: const ChartValuesOptions(
+            chartValuesOptions: ChartValuesOptions(
               showChartValuesInPercentage: true,
             ),
           ),

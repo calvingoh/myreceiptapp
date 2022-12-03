@@ -33,6 +33,13 @@ class DatabaseMethods {
         .update(userInfoMap);
   }
 
+  Future updateRole( String id, String role) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .update({"Role": role});
+  }
+
   Future addBarcodeDetail(
       Map<String, dynamic> userInfoMap, String addId) async {
     return await FirebaseFirestore.instance
@@ -53,6 +60,14 @@ class DatabaseMethods {
     return await FirebaseFirestore.instance
         .collection("users")
         .where("Id", isEqualTo: id)
+        .get();
+  }
+
+
+  Future<QuerySnapshot> getUserbnyusername(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .where("username", isEqualTo: id)
         .get();
   }
 

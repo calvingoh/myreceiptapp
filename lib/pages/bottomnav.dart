@@ -61,18 +61,18 @@ class _BottombarState extends State<Bottombar> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.qr_code_scanner_rounded),
-              label: "Scan",
+              label: "Scan Receipts",
               activeIcon:
               Icon(Icons.qr_code_scanner_rounded, color: Color(0xFF42A132)),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.receipt),
-              label: "Receipts",
+              label: "MyReceipts",
               activeIcon: Icon(Icons.receipt, color: Color(0xFF42A132)),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.currency_exchange),
-              label: "Spendings",
+              label: "MySpendings",
               activeIcon:
               Icon(Icons.currency_exchange, color: Color(0xFF42A132)),
             ),

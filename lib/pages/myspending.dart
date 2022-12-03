@@ -18,6 +18,7 @@ class _MyspendingState extends State<Myspending> {
 
   getthesharedpref() async {
     nov = await SharedPreferenceHelper().getUserSpend();
+    // print(nov);
     setState(() {});
   }
 
@@ -37,13 +38,15 @@ class _MyspendingState extends State<Myspending> {
 
   calculate2() {
     double talk = double.parse(nov!);
-    double take = talk <= 10000
-        ? 10000.0
-        : talk <= 30000
-        ? 30000.0
-        : 50000.0;
-    given1 = take / take;
-    print(given1);
+    double take = talk <= 1000
+        ? 1000.00
+        : talk <= 3000
+        ? 3000.00
+        : 5000.00;
+    given1 = talk / 1000.0;
+    // print(talk);
+    // print(take);
+    // print(given1);
   }
 
   @override

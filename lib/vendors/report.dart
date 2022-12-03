@@ -28,12 +28,15 @@ class _ReportState extends State<Report> {
 
   calculate2() {
     double talk = double.parse(nov!);
-    double take = talk <= 10000
-        ? 10000.0
-        : talk <= 30000
-        ? 30000.0
-        : 50000.0;
-    given1 = talk / take;
+    double take = talk <= 1000
+        ? 1000.0
+        : talk <= 3000
+        ? 3000.0
+        : 5000.0;
+    given1 = talk / 1000.0;
+
+    print(talk);
+    print(take);
     print(given1);
   }
 
@@ -55,7 +58,7 @@ class _ReportState extends State<Report> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "My Spendings",
+                "My Report",
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

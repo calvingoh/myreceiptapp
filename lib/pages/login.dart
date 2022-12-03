@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myreceiptapp/main.dart';
@@ -15,17 +16,51 @@ class logIn extends StatefulWidget {
 
 class _logInState extends State<logIn> {
   bool name = false, show = true;
-  String email = "", password = "", myname = "";
+  String spend = "",
+      myname = "",
+      myemail = "",
+      myusername = "",
+      myid = "",
+      mysale = "",
+      myimage = "", role="";
+  String email = "", password = "";
   final _formkey = GlobalKey<FormState>();
 
   TextEditingController useremailcontroller = new TextEditingController();
   TextEditingController usernamecontroller = new TextEditingController();
   TextEditingController userpasswordcontroller = new TextEditingController();
 
+  getThisUserInfo() async {
+    QuerySnapshot querySnapshot = await DatabaseMethods().getUserbnyusername(
+      useremailcontroller.text.replaceAll("@gmail.com", ""),
+    );
+
+    spend = "${querySnapshot.docs[0]["spend"]}";
+    myname = "${querySnapshot.docs[0]["name"]}";
+    myemail = "${querySnapshot.docs[0]["email"]}";
+    myusername = "${querySnapshot.docs[0]["username"]}";
+    myid = "${querySnapshot.docs[0]["Id"]}";
+    mysale = "${querySnapshot.docs[0]["sale"]}";
+    myimage = "${querySnapshot.docs[0]["Images"]}";
+    role="${querySnapshot.docs[0]["Role"]}";
+    await SharedPreferenceHelper().saveDisplayName(myname);
+    await SharedPreferenceHelper().saveUserEmail(myemail);
+    await SharedPreferenceHelper().saveUserId(myid);
+    await SharedPreferenceHelper().saveUserProfileUrl(myimage);
+
+    await SharedPreferenceHelper().saveUserSpendUrl(spend);
+    await SharedPreferenceHelper().saveUserSaleUrl(mysale);
+    await SharedPreferenceHelper().saveUserRole(role);
+
+    print(spend);
+    setState(() {});
+  }
+
   userLogin() async {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      await  getThisUserInfo();
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
@@ -97,12 +132,13 @@ class _logInState extends State<logIn> {
           "spend": 0,
           "sale": 0,
           "Images":
-          "https://firebasestorage.googleapis.com/v0/b/barberapp-ebcc1.appspot.com/o/icon1.png?alt=media&token=0fad24a5-a01b-4d67-b4a0-676fbc75b34a"
+          "https://firebasestorage.googleapis.com/v0/b/barberapp-ebcc1.appspot.com/o/icon1.png?alt=media&token=0fad24a5-a01b-4d67-b4a0-676fbc75b34a",
+          "Role":""
         };
 
         DatabaseMethods().addUserDetail(userInfoMap, Id).then((value) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Choose()));
+              context, MaterialPageRoute(builder: (context) => Choose(id: Id,)));
         });
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {

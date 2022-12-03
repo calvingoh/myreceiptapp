@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myreceiptapp/pages/bottomnav.dart';
+import 'package:myreceiptapp/service/database.dart';
 import 'package:myreceiptapp/service/shared_pref.dart';
 import 'package:myreceiptapp/vendors/vendornav.dart';
 
 class Choose extends StatefulWidget {
-  Choose({Key? key}) : super(key: key);
+  String id;
+  Choose({required this.id});
 
   @override
   State<Choose> createState() => _ChooseState();
@@ -36,6 +38,7 @@ class _ChooseState extends State<Choose> {
             GestureDetector(
               onTap: () async {
                 await SharedPreferenceHelper().saveUserRole("Costumer");
+                DatabaseMethods().updateRole(widget.id, "Costumer");
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Bottombar()));
               },
@@ -64,6 +67,7 @@ class _ChooseState extends State<Choose> {
             GestureDetector(
               onTap: () async {
                 await SharedPreferenceHelper().saveUserRole("Vendor");
+                DatabaseMethods().updateRole(widget.id, "Vendor");
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => VendorNav()));
               },

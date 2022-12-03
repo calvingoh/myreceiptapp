@@ -44,11 +44,11 @@ class VendorLineTitles {
       getTitles: (value) {
         switch (value.toInt()) {
           case 1:
-            return '10k';
+            return '1k';
           case 3:
-            return '30k';
+            return '3k';
           case 5:
-            return '50k';
+            return '5k';
         }
         return '';
       },

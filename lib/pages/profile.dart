@@ -79,21 +79,21 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: pic == null
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
+          margin: EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Profile",
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 30.0,
               ),
               selectedImage == null
@@ -130,26 +130,26 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                   )),
-              const SizedBox(
+              SizedBox(
                 height: 70.0,
               ),
               Container(
-                margin: const EdgeInsets.only(left: 20.0),
+                margin: EdgeInsets.only(left: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.person_outline,
                       size: 35.0,
                       color: Color(0xFF42A132),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       width: 30.0,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Name",
                           style: TextStyle(
                               color: Colors.black,
@@ -158,19 +158,19 @@ class _ProfileState extends State<Profile> {
                         ),
                         Text(
                           namecontroller.text,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: Colors.black,
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
-                    const Spacer(),
+                    Spacer(),
                     GestureDetector(
                       onTap: () {
                         openAdditem();
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.edit,
                         color: Colors.green,
                       ),
@@ -178,26 +178,26 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 30.0,
               ),
               Container(
-                margin: const EdgeInsets.only(left: 20.0),
+                margin: EdgeInsets.only(left: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.email_outlined,
                       size: 35.0,
                       color: Color(0xFF42A132),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       width: 30.0,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Email",
                           style: TextStyle(
                               color: Colors.black,
@@ -206,7 +206,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         Text(
                           email!,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: Colors.black,
                               fontSize: 19.0,
                               fontWeight: FontWeight.bold),
@@ -216,7 +216,7 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 80.0,
               ),
               GestureDetector(
@@ -229,11 +229,11 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.circular(50),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
                     decoration: BoxDecoration(
-                        color: const Color(0xFF42A132),
+                        color: Color(0xFF42A132),
                         borderRadius: BorderRadius.circular(50)),
-                    child: const Center(
+                    child: Center(
                         child: Text(
                           "LogOut",
                           style: TextStyle(
@@ -264,14 +264,14 @@ class _ProfileState extends State<Profile> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: const Icon(
+                        child: Icon(
                           Icons.arrow_back_ios_new_rounded,
                           color: Colors.green,
                         )),
-                    const SizedBox(
+                    SizedBox(
                       width: 50.0,
                     ),
-                    const Text(
+                    Text(
                       "Edit",
                       style: TextStyle(
                           color: Colors.black,
@@ -280,43 +280,45 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 20.0,
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                  margin: EdgeInsets.symmetric(horizontal: 20.0),
                   width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
                   decoration: BoxDecoration(
                       border: Border.all(),
                       borderRadius: BorderRadius.circular(20)),
                   child: TextField(
                     controller: namecontroller,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                         hintText: "Fill Item name",
                         border: InputBorder.none),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 20.0,
                 ),
                 GestureDetector(
                   onTap: () async {
-                    await SharedPreferenceHelper()
-                        .saveDisplayName(namecontroller.text);
-                    a++;
-                    setState(() {
-                      Navigator.pop(context);
-                    });
+                    if(namecontroller.text!=""){
+                      await SharedPreferenceHelper()
+                          .saveDisplayName(namecontroller.text);
+                      a++;
+                      setState(() {
+                        Navigator.pop(context);
+                      });
+                    }
                   },
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 30.0),
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    margin: EdgeInsets.symmetric(horizontal: 30.0),
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        color: const Color(0xFF42A232),
+                        color: Color(0xFF42A232),
                         borderRadius: BorderRadius.circular(12)),
-                    child: const Text(
+                    child: Text(
                       "Change",
                       style: TextStyle(
                           color: Colors.white,

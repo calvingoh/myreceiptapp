@@ -61,7 +61,7 @@ class _VendorNavState extends State<VendorNav> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.qr_code_scanner_outlined),
-              label: "Generate QR",
+              label: "Generate Digital Receipt",
 
               activeIcon: Icon(Icons.qr_code_scanner_outlined, color: Color(0xFF42A132)),
             ),
